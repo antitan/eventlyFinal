@@ -63,9 +63,9 @@ public static class UsersModule
 
         services.AddDbContext<UsersDbContext>((sp, options) =>
             options
-                .UseNpgsql(
+                .UseSqlServer(
                     configuration.GetConnectionString("Database"),
-                    npgsqlOptions => npgsqlOptions
+                    sqlServerOptions => sqlServerOptions
                         .MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Users))
                 .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>())
                 .UseSnakeCaseNamingConvention());

@@ -29,7 +29,7 @@ public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
     {
         var outboxMessages = context
             .ChangeTracker
-            .Entries<Entity>()
+            .Entries<IDomainEventEntity>()
             .Select(entry => entry.Entity)
             .SelectMany(entity =>
             {

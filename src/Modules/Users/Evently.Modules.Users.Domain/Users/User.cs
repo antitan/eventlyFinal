@@ -1,29 +1,29 @@
 ﻿using Evently.Common.Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Evently.Modules.Users.Domain.Users;
 
 /// <summary>
 /// Représente l'agrégat racine utilisateur dans le domaine Users.
 /// </summary>
-public sealed class User : Entity
+public sealed class User : IdentityUser<Guid>, IDomainEventEntity
 {
     private readonly List<Role> _roles = [];
+    private readonly List<IDomainEvent> _domainEvents = [];
 
     private User()
     {
     }
 
-    public Guid Id { get; private set; }
+    public string FirstName { get; private set; } = string.Empty;
 
-    public string Email { get; private set; }
+    public string LastName { get; private set; } = string.Empty;
 
-    public string FirstName { get; private set; }
-
-    public string LastName { get; private set; }
-
-    public string IdentityId { get; private set; }
+    public string IdentityId { get; private set; } = string.Empty;
 
     public IReadOnlyCollection<Role> Roles => _roles.ToList();
+
+    public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.ToList();
 
     /// <summary>
     /// Fabrique un nouvel utilisateur membre et publie l'événement de création.
@@ -34,6 +34,9 @@ public sealed class User : Entity
         {
             Id = Guid.NewGuid(),
             Email = email,
+            UserName = email,
+            NormalizedUserName = email.ToUpperInvariant(),
+            NormalizedEmail = email.ToUpperInvariant(),
             FirstName = firstName,
             LastName = lastName,
             IdentityId = identityId,
@@ -60,5 +63,15 @@ public sealed class User : Entity
         LastName = lastName;
 
         Raise(new UserProfileUpdatedDomainEvent(Id, FirstName, LastName));
+    }
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
+    }
+
+    private void Raise(IDomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
     }
 }

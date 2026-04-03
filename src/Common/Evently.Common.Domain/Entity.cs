@@ -3,7 +3,7 @@
 /// <summary>
 /// Classe de base des agrégats/entités qui publient des événements de domaine.
 /// </summary>
-public abstract class Entity
+public abstract class Entity : IDomainEventEntity
 {
     // Buffer temporaire des événements produits durant une unité de travail.
     private readonly List<IDomainEvent> _domainEvents = [];

@@ -56,9 +56,9 @@ public static class AttendanceModule
     {
         services.AddDbContext<AttendanceDbContext>((sp, options) =>
             options
-                .UseNpgsql(
+                .UseSqlServer(
                     configuration.GetConnectionString("Database"),
-                    npgsqlOptions => npgsqlOptions
+                    sqlServerOptions => sqlServerOptions
                         .MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Attendance))
                 .UseSnakeCaseNamingConvention()
                 .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));
