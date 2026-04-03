@@ -306,6 +306,9 @@ dotnet_diagnostic.CA1848.severity = none
 # CA1860: Avoid using 'Enumerable.Any()' extension method
 dotnet_diagnostic.CA1860.severity = none
 
+# Because an application's API isn't typically referenced from outside
+dotnet_diagnostic.CA1515.severity = none
+
 # CA2007: Consider calling ConfigureAwait on the awaited task
 dotnet_diagnostic.CA2007.severity = none
 
