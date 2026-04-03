@@ -7,6 +7,9 @@ using MediatR;
 
 namespace Evently.Common.Application.Behaviors;
 
+/// <summary>
+/// Behavior MediatR chargé d'appliquer FluentValidation avant l'exécution des handlers.
+/// </summary>
 internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
     IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
@@ -17,13 +20,17 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
+        // Exécute tous les validateurs associés à la requête.
         ValidationFailure[] validationFailures = await ValidateAsync(request);
 
         if (validationFailures.Length == 0)
         {
+            // Pas d'erreur : on continue la pipeline normalement.
             return await next();
         }
 
+        // Si le handler retourne Result<T>, on fabrique dynamiquement
+        // un échec de validation typé sans lever d'exception.
         if (typeof(TResponse).IsGenericType &&
             typeof(TResponse).GetGenericTypeDefinition() == typeof(Result<>))
         {
@@ -40,9 +47,11 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
         }
         else if (typeof(TResponse) == typeof(Result))
         {
+            // Variante non générique : renvoie un Result d'échec.
             return (TResponse)(object)Result.Failure(CreateValidationError(validationFailures));
         }
 
+        // Fallback : pour les handlers qui ne suivent pas le contrat Result.
         throw new ValidationException(validationFailures);
     }
 
@@ -50,11 +59,13 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
     {
         if (!validators.Any())
         {
+            // Aucun validateur enregistré pour cette requête.
             return [];
         }
 
         var context = new ValidationContext<TRequest>(request);
 
+        // Exécute les validateurs en parallèle pour limiter la latence globale.
         ValidationResult[] validationResults = await Task.WhenAll(
             validators.Select(validator => validator.ValidateAsync(context)));
 
@@ -66,6 +77,7 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
         return validationFailures;
     }
 
+    // Convertit le modèle FluentValidation vers la représentation d'erreur domaine.
     private static ValidationError CreateValidationError(ValidationFailure[] validationFailures) =>
         new(validationFailures.Select(f => Error.Problem(f.ErrorCode, f.ErrorMessage)).ToArray());
 }

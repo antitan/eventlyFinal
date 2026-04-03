@@ -20,8 +20,14 @@ using StackExchange.Redis;
 
 namespace Evently.Common.Infrastructure;
 
+/// <summary>
+/// Composition root de la couche Infrastructure commune.
+/// </summary>
 public static class InfrastructureConfiguration
 {
+    /// <summary>
+    /// Enregistre tous les services techniques partagés : auth, bus, data, cache, télémétrie.
+    /// </summary>
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         string serviceName,
@@ -29,23 +35,28 @@ public static class InfrastructureConfiguration
         string databaseConnectionString,
         string redisConnectionString)
     {
+        // Configuration sécurité cross-module.
         services.AddAuthenticationInternal();
-
         services.AddAuthorizationInternal();
 
+        // Services singleton simples et sans état.
         services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
-
         services.TryAddSingleton<IEventBus, EventBus.EventBus>();
 
+        // Intercepteur EF Core chargé d'alimenter l'outbox transactionnelle.
         services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
 
+        // Source Npgsql partagée pour bénéficier du pooling natif.
         NpgsqlDataSource npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
         services.TryAddSingleton(npgsqlDataSource);
 
+        // Fabrique Dapper dédiée aux requêtes SQL bas niveau.
         services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
 
+        // Type handler nécessaire pour sérialiser/désérialiser les tableaux PostgreSQL.
         SqlMapper.AddTypeHandler(new GenericArrayHandler<string>());
 
+        // Quartz est utilisé pour les jobs récurrents (inbox/outbox processing).
         services.AddQuartz(configurator =>
         {
             var scheduler = Guid.NewGuid();
@@ -55,6 +66,8 @@ public static class InfrastructureConfiguration
 
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
+        // On tente Redis en priorité. Si indisponible, fallback in-memory
+        // pour permettre à l'application de démarrer en environnement local.
         try
         {
             IConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect(redisConnectionString);
@@ -69,8 +82,10 @@ public static class InfrastructureConfiguration
 
         services.TryAddSingleton<ICacheService, CacheService>();
 
+        // Bus de messages interne (MassTransit + transport in-memory par défaut).
         services.AddMassTransit(configure =>
         {
+            // Chaque module enregistre ses propres consumers.
             foreach (Action<IRegistrationConfigurator> configureConsumers in moduleConfigureConsumers)
             {
                 configureConsumers(configure);
@@ -84,6 +99,7 @@ public static class InfrastructureConfiguration
             });
         });
 
+        // OpenTelemetry : traces web, HTTP sortant, EF, Redis et Npgsql.
         services
             .AddOpenTelemetry()
             .ConfigureResource(resource => resource.AddService(serviceName))
