@@ -2,6 +2,9 @@
 
 namespace Evently.Modules.Users.IntegrationEvents;
 
+/// <summary>
+/// Événement publié vers les autres modules lorsqu'un profil utilisateur est modifié.
+/// </summary>
 public sealed class UserProfileUpdatedIntegrationEvent : IntegrationEvent
 {
     public UserProfileUpdatedIntegrationEvent(

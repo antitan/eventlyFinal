@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Evently.Modules.Users.Infrastructure.Users;
 
+/// <summary>
+/// Implémentation EF Core du repository utilisateur.
+/// </summary>
 internal sealed class UserRepository(UsersDbContext context) : IUserRepository
 {
     public async Task<User?> GetAsync(Guid id, CancellationToken cancellationToken = default)

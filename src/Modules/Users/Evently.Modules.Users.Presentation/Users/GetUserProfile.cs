@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Evently.Modules.Users.Presentation.Users;
 
+/// <summary>
+/// Endpoint protégé qui retourne le profil de l'utilisateur authentifié.
+/// </summary>
 internal sealed class GetUserProfile : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)

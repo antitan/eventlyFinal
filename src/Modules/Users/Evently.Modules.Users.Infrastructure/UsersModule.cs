@@ -21,6 +21,9 @@ using Microsoft.Extensions.Options;
 
 namespace Evently.Modules.Users.Infrastructure;
 
+/// <summary>
+/// Composition root du module Users: enregistre application, infra, handlers et endpoints.
+/// </summary>
 public static class UsersModule
 {
     public static IServiceCollection AddUsersModule(

@@ -2,6 +2,9 @@
 
 namespace Evently.Modules.Users.Domain.Users;
 
+/// <summary>
+/// Représente l'agrégat racine utilisateur dans le domaine Users.
+/// </summary>
 public sealed class User : Entity
 {
     private readonly List<Role> _roles = [];
@@ -22,6 +25,9 @@ public sealed class User : Entity
 
     public IReadOnlyCollection<Role> Roles => _roles.ToList();
 
+    /// <summary>
+    /// Fabrique un nouvel utilisateur membre et publie l'événement de création.
+    /// </summary>
     public static User Create(string email, string firstName, string lastName, string identityId)
     {
         var user = new User
@@ -40,6 +46,9 @@ public sealed class User : Entity
         return user;
     }
 
+    /// <summary>
+    /// Met à jour le profil utilisateur et émet un événement uniquement si une valeur change.
+    /// </summary>
     public void Update(string firstName, string lastName)
     {
         if (FirstName == firstName && LastName == lastName)

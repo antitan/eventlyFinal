@@ -2,6 +2,9 @@
 
 namespace Evently.Modules.Users.IntegrationEvents;
 
+/// <summary>
+/// Événement publié vers les autres modules lorsqu'un utilisateur est inscrit.
+/// </summary>
 public sealed class UserRegisteredIntegrationEvent : IntegrationEvent
 {
     public UserRegisteredIntegrationEvent(

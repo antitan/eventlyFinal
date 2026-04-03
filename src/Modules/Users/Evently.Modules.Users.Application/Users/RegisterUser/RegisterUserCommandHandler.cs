@@ -6,12 +6,18 @@ using Evently.Modules.Users.Domain.Users;
 
 namespace Evently.Modules.Users.Application.Users.RegisterUser;
 
+/// <summary>
+/// Orchestration de l'inscription: création IDP, création domaine, puis transaction locale.
+/// </summary>
 internal sealed class RegisterUserCommandHandler(
     IIdentityProviderService identityProviderService,
     IUserRepository userRepository,
     IUnitOfWork unitOfWork)
     : ICommandHandler<RegisterUserCommand, Guid>
 {
+    /// <summary>
+    /// Exécute la commande d'inscription et retourne l'identifiant technique du nouvel utilisateur.
+    /// </summary>
     public async Task<Result<Guid>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         Result<string> result = await identityProviderService.RegisterUserAsync(

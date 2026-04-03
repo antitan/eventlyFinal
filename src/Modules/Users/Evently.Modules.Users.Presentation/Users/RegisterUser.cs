@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Evently.Modules.Users.Presentation.Users;
 
+/// <summary>
+/// Endpoint HTTP public permettant l'inscription d'un nouvel utilisateur.
+/// </summary>
 internal sealed class RegisterUser : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)

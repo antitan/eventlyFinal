@@ -5,6 +5,9 @@ using Evently.Modules.Users.Domain.Users;
 
 namespace Evently.Modules.Users.Application.Users.UpdateUser;
 
+/// <summary>
+/// Traite les modifications de profil en appliquant les règles du domaine.
+/// </summary>
 internal sealed class UpdateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
     : ICommandHandler<UpdateUserCommand>
 {
