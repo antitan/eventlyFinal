@@ -16,6 +16,9 @@ using Quartz;
 namespace Evently.Modules.Users.Infrastructure.Outbox;
 
 [DisallowConcurrentExecution]
+/// <summary>
+/// Job Quartz qui dépile les messages outbox et exécute les handlers de domain events.
+/// </summary>
 internal sealed class ProcessOutboxJob(
     IDbConnectionFactory dbConnectionFactory,
     IServiceScopeFactory serviceScopeFactory,

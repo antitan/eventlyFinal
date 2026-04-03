@@ -8,6 +8,9 @@ using Evently.Modules.Users.Domain.Users;
 
 namespace Evently.Modules.Users.Application.Users.GetUserPermissions;
 
+/// <summary>
+/// Retourne l'ensemble des permissions effectives à partir des rôles de l'utilisateur.
+/// </summary>
 internal sealed class GetUserPermissionsQueryHandler(IDbConnectionFactory dbConnectionFactory)
     : IQueryHandler<GetUserPermissionsQuery, PermissionsResponse>
 {

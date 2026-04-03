@@ -1,5 +1,8 @@
 ﻿namespace Evently.Modules.Users.Domain.Users;
 
+/// <summary>
+/// Permission métier utilisée pour l'autorisation fine par action.
+/// </summary>
 public sealed class Permission
 {
     public static readonly Permission GetUser = new("users:read");

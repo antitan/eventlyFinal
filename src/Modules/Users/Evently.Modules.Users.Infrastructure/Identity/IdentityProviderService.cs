@@ -5,6 +5,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Evently.Modules.Users.Infrastructure.Identity;
 
+/// <summary>
+/// Adaptateur applicatif vers Keycloak pour les opérations de gestion d'identité.
+/// </summary>
 internal sealed class IdentityProviderService(KeyCloakClient keyCloakClient, ILogger<IdentityProviderService> logger)
     : IIdentityProviderService
 {

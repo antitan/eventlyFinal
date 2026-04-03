@@ -7,6 +7,9 @@ using Evently.Modules.Users.Domain.Users;
 
 namespace Evently.Modules.Users.Application.Users.GetUser;
 
+/// <summary>
+/// Lit le profil utilisateur depuis la projection SQL (read model).
+/// </summary>
 internal sealed class GetUserQueryHandler(IDbConnectionFactory dbConnectionFactory)
     : IQueryHandler<GetUserQuery, UserResponse>
 {

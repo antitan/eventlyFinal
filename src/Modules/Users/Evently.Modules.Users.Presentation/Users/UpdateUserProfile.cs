@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Evently.Modules.Users.Presentation.Users;
 
+/// <summary>
+/// Endpoint protégé pour mettre à jour le prénom et le nom du profil courant.
+/// </summary>
 internal sealed class UpdateUserProfile : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)

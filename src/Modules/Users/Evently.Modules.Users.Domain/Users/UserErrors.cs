@@ -2,6 +2,9 @@
 
 namespace Evently.Modules.Users.Domain.Users;
 
+/// <summary>
+/// Catalogue des erreurs métier exposées par le module utilisateur.
+/// </summary>
 public static class UserErrors
 {
     public static Error NotFound(Guid userId) =>

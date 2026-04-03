@@ -15,6 +15,9 @@ using Quartz;
 namespace Evently.Modules.Users.Infrastructure.Inbox;
 
 [DisallowConcurrentExecution]
+/// <summary>
+/// Job Quartz qui traite les messages entrants stockés dans l'inbox du module Users.
+/// </summary>
 internal sealed class ProcessInboxJob(
     IDbConnectionFactory dbConnectionFactory,
     IServiceScopeFactory serviceScopeFactory,

@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Evently.Modules.Users.Infrastructure.Database;
 
+/// <summary>
+/// DbContext dédié au module Users; sert aussi d'implémentation de l'Unit Of Work.
+/// </summary>
 public sealed class UsersDbContext(DbContextOptions<UsersDbContext> options) : DbContext(options), IUnitOfWork
 {
     internal DbSet<User> Users { get; set; }
