@@ -1,4 +1,4 @@
-﻿using System.Data.Common;
+﻿using System.Data;
 using Dapper;
 using Evently.Common.Application.Data;
 using Evently.Common.Application.Messaging;
@@ -12,7 +12,7 @@ internal sealed class GetAttendeeQueryQueryHandler(IDbConnectionFactory dbConnec
 {
     public async Task<Result<AttendeeResponse>> Handle(GetAttendeeQuery request, CancellationToken cancellationToken)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         const string sql =
             $"""
@@ -25,7 +25,8 @@ internal sealed class GetAttendeeQueryQueryHandler(IDbConnectionFactory dbConnec
              WHERE id = @CustomerId
              """;
 
-        AttendeeResponse? customer = await connection.QuerySingleOrDefaultAsync<AttendeeResponse>(sql, request);
+        AttendeeResponse? customer =
+            await connection.QuerySingleOrDefaultAsync<AttendeeResponse>(sql, request);
 
         if (customer is null)
         {

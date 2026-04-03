@@ -12,7 +12,7 @@ internal sealed class GetCategoryQueryHandler(IDbConnectionFactory dbConnectionF
 {
     public async Task<Result<CategoryResponse>> Handle(GetCategoryQuery request, CancellationToken cancellationToken)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using System.Data.IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         const string sql =
             $"""

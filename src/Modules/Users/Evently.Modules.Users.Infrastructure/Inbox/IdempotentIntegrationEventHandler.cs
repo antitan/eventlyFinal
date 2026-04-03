@@ -16,7 +16,7 @@ internal sealed class IdempotentIntegrationEventHandler<TIntegrationEvent>(
         TIntegrationEvent integrationEvent,
         CancellationToken cancellationToken = default)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using System.Data.IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         var inboxMessageConsumer = new InboxMessageConsumer(integrationEvent.Id, decorated.GetType().Name);
 
@@ -31,7 +31,7 @@ internal sealed class IdempotentIntegrationEventHandler<TIntegrationEvent>(
     }
 
     private static async Task<bool> InboxConsumerExistsAsync(
-        DbConnection dbConnection,
+        System.Data.IDbConnection dbConnection,
         InboxMessageConsumer inboxMessageConsumer)
     {
         const string sql =
@@ -48,7 +48,7 @@ internal sealed class IdempotentIntegrationEventHandler<TIntegrationEvent>(
     }
 
     private static async Task InsertInboxConsumerAsync(
-        DbConnection dbConnection,
+        System.Data.IDbConnection dbConnection,
         InboxMessageConsumer inboxMessageConsumer)
     {
         const string sql =

@@ -48,7 +48,6 @@ builder.Services.AddInfrastructure(
 Uri keyCloakHealthUrl = builder.Configuration.GetKeyCloakHealthUrl();
 
 builder.Services.AddHealthChecks()
-    .AddNpgSql(databaseConnectionString)
     .AddRedis(redisConnectionString)
     .AddKeyCloak(keyCloakHealthUrl);
 

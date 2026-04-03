@@ -13,7 +13,7 @@ internal sealed class EventCreatedDomainEventHandler(IDbConnectionFactory dbConn
         EventCreatedDomainEvent domainEvent,
         CancellationToken cancellationToken = default)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+         using System.Data.IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         const string sql =
             """

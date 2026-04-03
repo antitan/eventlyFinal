@@ -12,7 +12,7 @@ internal sealed class GetTicketQueryHandler(IDbConnectionFactory dbConnectionFac
 {
     public async Task<Result<TicketResponse>> Handle(GetTicketQuery request, CancellationToken cancellationToken)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using System.Data.IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         const string sql =
             $"""
