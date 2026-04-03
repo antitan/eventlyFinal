@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Evently.Common.Application.Behaviors;
 
+/// <summary>
+/// Behavior MediatR qui centralise la capture des exceptions non gérées.
+/// </summary>
 internal sealed class ExceptionHandlingPipelineBehavior<TRequest, TResponse>(
     ILogger<ExceptionHandlingPipelineBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
@@ -16,12 +19,16 @@ internal sealed class ExceptionHandlingPipelineBehavior<TRequest, TResponse>(
     {
         try
         {
+            // Délègue l'exécution au handler suivant de la pipeline.
             return await next();
         }
         catch (Exception exception)
         {
+            // Journalise le contexte minimum utile pour la corrélation en production.
             logger.LogError(exception, "Unhandled exception for {RequestName}", typeof(TRequest).Name);
 
+            // Normalise l'exception dans un type applicatif dédié pour éviter
+            // de propager des détails d'infrastructure jusqu'à la présentation.
             throw new EventlyException(typeof(TRequest).Name, innerException: exception);
         }
     }

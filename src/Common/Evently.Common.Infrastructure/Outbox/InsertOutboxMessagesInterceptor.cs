@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 
 namespace Evently.Common.Infrastructure.Outbox;
 
+/// <summary>
+/// Intercepteur EF Core qui convertit les DomainEvents en messages d'outbox.
+/// </summary>
 public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
 {
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
@@ -15,6 +18,7 @@ public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
     {
         if (eventData.Context is not null)
         {
+            // Injection des messages dans la même transaction que les données métiers.
             InsertOutboxMessages(eventData.Context);
         }
 
@@ -29,6 +33,8 @@ public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
             .Select(entry => entry.Entity)
             .SelectMany(entity =>
             {
+                // On capture les événements puis on vide l'entité
+                // pour éviter une republication au SaveChanges suivant.
                 IReadOnlyCollection<IDomainEvent> domainEvents = entity.DomainEvents;
 
                 entity.ClearDomainEvents();
@@ -37,6 +43,7 @@ public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
             })
             .Select(domainEvent => new OutboxMessage
             {
+                // Id du domain event réutilisé pour garantir l'idempotence côté consumer.
                 Id = domainEvent.Id,
                 Type = domainEvent.GetType().Name,
                 Content = JsonConvert.SerializeObject(domainEvent, SerializerSettings.Instance),

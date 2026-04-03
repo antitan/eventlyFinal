@@ -1,6 +1,12 @@
-﻿namespace Evently.Common.Application.Clock;
+namespace Evently.Common.Application.Clock;
 
+/// <summary>
+/// Abstraction temporelle pour rendre le code testable.
+/// </summary>
 public interface IDateTimeProvider
 {
-    public DateTime UtcNow { get; }
+    /// <summary>
+    /// Date/heure UTC courante.
+    /// </summary>
+    DateTime UtcNow { get; }
 }
