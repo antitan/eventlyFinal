@@ -15,7 +15,7 @@ internal sealed class GetUserQueryHandler(IDbConnectionFactory dbConnectionFacto
 {
     public async Task<Result<UserResponse>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using System.Data.IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         const string sql =
             $"""

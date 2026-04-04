@@ -15,7 +15,7 @@ internal sealed class IntegrationEventConsumer<TIntegrationEvent>(IDbConnectionF
 {
     public async Task Consume(ConsumeContext<TIntegrationEvent> context)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using System.Data.IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         TIntegrationEvent integrationEvent = context.Message;
 

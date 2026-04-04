@@ -50,9 +50,9 @@ public static class EventsModule
     {
         services.AddDbContext<EventsDbContext>((sp, options) =>
             options
-                .UseNpgsql(
+                .UseSqlServer(
                     configuration.GetConnectionString("Database"),
-                    npgsqlOptions => npgsqlOptions
+                    sqlServerOptions => sqlServerOptions
                         .MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Events))
                 .UseSnakeCaseNamingConvention()
                 .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));

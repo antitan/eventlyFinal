@@ -32,8 +32,8 @@ internal sealed class ProcessOutboxJob(
     {
         logger.LogInformation("{Module} - Beginning to process outbox messages", ModuleName);
 
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
-        await using DbTransaction transaction = await connection.BeginTransactionAsync();
+        using System.Data.IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using IDbTransaction transaction = connection.BeginTransaction();
 
         IReadOnlyList<OutboxMessageResponse> outboxMessages = await GetOutboxMessagesAsync(connection, transaction);
 
@@ -73,7 +73,7 @@ internal sealed class ProcessOutboxJob(
             await UpdateOutboxMessageAsync(connection, transaction, outboxMessage, exception);
         }
 
-        await transaction.CommitAsync();
+        transaction.Commit();
 
         logger.LogInformation("{Module} - Completed processing outbox messages", ModuleName);
     }

@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using Dapper;
 using Evently.Common.Application.Data;
 using Evently.Common.Application.Messaging;
@@ -13,7 +14,7 @@ internal sealed class AttendeeCheckedInDomainEventHandler(IDbConnectionFactory d
         AttendeeCheckedInDomainEvent domainEvent,
         CancellationToken cancellationToken = default)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+         using IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         const string sql =
             """

@@ -16,7 +16,7 @@ internal sealed class SearchEventsQueryHandler(IDbConnectionFactory dbConnection
         SearchEventsQuery request,
         CancellationToken cancellationToken)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using System.Data.IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         var parameters = new SearchEventsParameters(
             (int)EventStatus.Published,
@@ -34,7 +34,7 @@ internal sealed class SearchEventsQueryHandler(IDbConnectionFactory dbConnection
     }
 
     private static async Task<IReadOnlyCollection<EventResponse>> GetEventsAsync(
-        DbConnection connection,
+        System.Data.IDbConnection connection,
         SearchEventsParameters parameters)
     {
         const string sql =
@@ -63,7 +63,7 @@ internal sealed class SearchEventsQueryHandler(IDbConnectionFactory dbConnection
         return events;
     }
 
-    private static async Task<int> CountEventsAsync(DbConnection connection, SearchEventsParameters parameters)
+    private static async Task<int> CountEventsAsync(System.Data.IDbConnection connection, SearchEventsParameters parameters)
     {
         const string sql =
             """

@@ -13,7 +13,7 @@ internal sealed class GetEventsQueryHandler(IDbConnectionFactory dbConnectionFac
         GetEventsQuery request,
         CancellationToken cancellationToken)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using System.Data.IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         const string sql =
             $"""

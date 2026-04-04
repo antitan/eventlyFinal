@@ -14,7 +14,7 @@ internal sealed class GetTicketTypesQueryHandler(IDbConnectionFactory dbConnecti
         GetTicketTypesQuery request,
         CancellationToken cancellationToken)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using System.Data.IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         const string sql =
             $"""

@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using Dapper;
 using Evently.Common.Application.Data;
 using Evently.Common.Application.Messaging;
@@ -14,7 +15,7 @@ internal sealed class GetEventStatisticsQueryHandler(IDbConnectionFactory dbConn
         GetEventStatisticsQuery request,
         CancellationToken cancellationToken)
     {
-        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        using IDbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         const string sql =
             $"""

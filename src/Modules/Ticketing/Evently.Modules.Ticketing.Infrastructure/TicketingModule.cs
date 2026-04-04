@@ -59,9 +59,9 @@ public static class TicketingModule
     {
         services.AddDbContext<TicketingDbContext>((sp, options) =>
             options
-                .UseNpgsql(
+                .UseSqlServer(
                     configuration.GetConnectionString("Database"),
-                    npgsqlOptions => npgsqlOptions
+                    sqlServerOptions => sqlServerOptions
                         .MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Ticketing))
                 .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>())
                 .UseSnakeCaseNamingConvention());

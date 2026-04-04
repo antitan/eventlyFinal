@@ -10,9 +10,12 @@ internal sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
     {
         builder.ToTable("roles");
 
-        builder.HasKey(r => r.Name);
+        builder.HasKey(r => r.Id);
 
         builder.Property(r => r.Name).HasMaxLength(50);
+        builder.Property(r => r.NormalizedName).HasMaxLength(50);
+
+        builder.HasIndex(r => r.NormalizedName).IsUnique();
 
         builder
             .HasMany<User>()
@@ -21,7 +24,7 @@ internal sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
             {
                 joinBuilder.ToTable("user_roles");
 
-                joinBuilder.Property("RolesName").HasColumnName("role_name");
+                joinBuilder.Property("RolesId").HasColumnName("role_id");
             });
 
         builder.HasData(
