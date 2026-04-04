@@ -3,8 +3,8 @@ using System;
 using Evently.Modules.Users.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -18,43 +18,36 @@ namespace Evently.Modules.Users.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("users")
-                .HasAnnotation("ProductVersion", "8.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Evently.Common.Infrastructure.Inbox.InboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)")
-                        .HasColumnName("content");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Error")
-                        .HasColumnType("text")
-                        .HasColumnName("error");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OccurredOnUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("occurred_on_utc");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ProcessedOnUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("processed_on_utc");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("type");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id")
-                        .HasName("pk_inbox_messages");
+                    b.HasKey("Id");
 
                     b.ToTable("inbox_messages", "users");
                 });
@@ -62,16 +55,13 @@ namespace Evently.Modules.Users.Infrastructure.Database.Migrations
             modelBuilder.Entity("Evently.Common.Infrastructure.Inbox.InboxMessageConsumer", b =>
                 {
                     b.Property<Guid>("InboxMessageId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("inbox_message_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(500)");
 
-                    b.HasKey("InboxMessageId", "Name")
-                        .HasName("pk_inbox_message_consumers");
+                    b.HasKey("InboxMessageId", "Name");
 
                     b.ToTable("inbox_message_consumers", "users");
                 });
@@ -80,34 +70,27 @@ namespace Evently.Modules.Users.Infrastructure.Database.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)")
-                        .HasColumnName("content");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Error")
-                        .HasColumnType("text")
-                        .HasColumnName("error");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OccurredOnUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("occurred_on_utc");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ProcessedOnUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("processed_on_utc");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("type");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id")
-                        .HasName("pk_outbox_messages");
+                    b.HasKey("Id");
 
                     b.ToTable("outbox_messages", "users");
                 });
@@ -115,16 +98,13 @@ namespace Evently.Modules.Users.Infrastructure.Database.Migrations
             modelBuilder.Entity("Evently.Common.Infrastructure.Outbox.OutboxMessageConsumer", b =>
                 {
                     b.Property<Guid>("OutboxMessageId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("outbox_message_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(500)");
 
-                    b.HasKey("OutboxMessageId", "Name")
-                        .HasName("pk_outbox_message_consumers");
+                    b.HasKey("OutboxMessageId", "Name");
 
                     b.ToTable("outbox_message_consumers", "users");
                 });
@@ -133,11 +113,9 @@ namespace Evently.Modules.Users.Infrastructure.Database.Migrations
                 {
                     b.Property<string>("Code")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("code");
+                        .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("Code")
-                        .HasName("pk_permissions");
+                    b.HasKey("Code");
 
                     b.ToTable("permissions", "users");
 
@@ -214,24 +192,41 @@ namespace Evently.Modules.Users.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("Evently.Modules.Users.Domain.Users.Role", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Name")
-                        .HasName("pk_roles");
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("roles", "users");
 
                     b.HasData(
                         new
                         {
-                            Name = "Member"
+                            Id = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6"),
+                            Name = "Member",
+                            NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Name = "Administrator"
+                            Id = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960"),
+                            Name = "Administrator",
+                            NormalizedName = "ADMINISTRATOR"
                         });
                 });
 
@@ -239,61 +234,99 @@ namespace Evently.Modules.Users.Infrastructure.Database.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
-                        .HasColumnName("email");
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("first_name");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("IdentityId")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("identity_id");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("last_name");
+                        .HasColumnType("nvarchar(200)");
 
-                    b.HasKey("Id")
-                        .HasName("pk_users");
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique()
-                        .HasDatabaseName("ix_users_email");
+                        .HasFilter("[Email] IS NOT NULL");
 
                     b.HasIndex("IdentityId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_users_identity_id");
+                        .IsUnique();
 
-                    b.ToTable("users", "users");
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("UserName")
+                        .IsUnique()
+                        .HasFilter("[UserName] IS NOT NULL");
+
+                    b.ToTable("Users", "users");
                 });
 
             modelBuilder.Entity("PermissionRole", b =>
                 {
                     b.Property<string>("PermissionCode")
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("permission_code");
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("RoleName")
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("role_name");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("PermissionCode", "RoleName")
-                        .HasName("pk_role_permissions");
+                    b.HasKey("PermissionCode", "RoleId");
 
-                    b.HasIndex("RoleName")
-                        .HasDatabaseName("ix_role_permissions_role_name");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("role_permissions", "users");
 
@@ -301,160 +334,157 @@ namespace Evently.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "users:read",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "users:update",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "events:search",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "ticket-types:read",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "carts:read",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "carts:add",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "carts:remove",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "orders:read",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "orders:create",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "tickets:read",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "tickets:check-in",
-                            RoleName = "Member"
+                            RoleId = new Guid("43f0ccca-e92a-4fa9-8d76-95e0746d33f6")
                         },
                         new
                         {
                             PermissionCode = "users:read",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "users:update",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "events:read",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "events:search",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "events:update",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "ticket-types:read",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "ticket-types:update",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "categories:read",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "categories:update",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "carts:read",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "carts:add",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "carts:remove",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "orders:read",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "orders:create",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "tickets:read",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "tickets:check-in",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         },
                         new
                         {
                             PermissionCode = "event-statistics:read",
-                            RoleName = "Administrator"
+                            RoleId = new Guid("7e7e4db6-0880-4b6a-b5d3-2d50e183f960")
                         });
                 });
 
             modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.Property<string>("RolesName")
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("role_name");
+                    b.Property<Guid>("RolesId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("role_id");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("RolesName", "UserId")
-                        .HasName("pk_user_roles");
+                    b.HasKey("RolesId", "UserId");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_user_roles_user_id");
+                    b.HasIndex("UserId");
 
                     b.ToTable("user_roles", "users");
                 });
@@ -465,32 +495,28 @@ namespace Evently.Modules.Users.Infrastructure.Database.Migrations
                         .WithMany()
                         .HasForeignKey("PermissionCode")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_role_permissions_permissions_permission_code");
+                        .IsRequired();
 
                     b.HasOne("Evently.Modules.Users.Domain.Users.Role", null)
                         .WithMany()
-                        .HasForeignKey("RoleName")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_role_permissions_roles_role_name");
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RoleUser", b =>
                 {
                     b.HasOne("Evently.Modules.Users.Domain.Users.Role", null)
                         .WithMany()
-                        .HasForeignKey("RolesName")
+                        .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_roles_roles_roles_name");
+                        .IsRequired();
 
                     b.HasOne("Evently.Modules.Users.Domain.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_roles_users_user_id");
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

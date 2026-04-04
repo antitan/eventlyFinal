@@ -231,6 +231,9 @@ dotnet_diagnostic.CA1000.severity = none
 # CA1002: Do not expose generic lists
 dotnet_diagnostic.CA1002.severity = none
 
+# CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array
+dotnet_diagnostic.CA1861.severity = none
+
 # CA1008: Enums should have zero value
 dotnet_diagnostic.CA1008.severity = none
 
@@ -360,6 +363,9 @@ dotnet_diagnostic.IDE0270.severity = none
 dotnet_diagnostic.IDE0290.severity = none
 
 # SonarAnalyzer.CSharp rules
+
+# S125: Remove this commented out code
+dotnet_diagnostic.S125.severity = none
 
 # S112: General or reserved exceptions should never be thrown
 dotnet_diagnostic.S112.severity = none

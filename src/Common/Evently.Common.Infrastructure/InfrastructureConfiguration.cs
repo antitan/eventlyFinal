@@ -12,7 +12,6 @@ using Evently.Common.Infrastructure.Outbox;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Npgsql;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Quartz;
@@ -32,7 +31,6 @@ public static class InfrastructureConfiguration
         this IServiceCollection services,
         string serviceName,
         Action<IRegistrationConfigurator>[] moduleConfigureConsumers,
-        string databaseConnectionString,
         string redisConnectionString)
     {
         // Configuration sécurité cross-module.
@@ -45,10 +43,6 @@ public static class InfrastructureConfiguration
 
         // Intercepteur EF Core chargé d'alimenter l'outbox transactionnelle.
         services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
-
-        // Source Npgsql partagée pour bénéficier du pooling natif.
-        NpgsqlDataSource npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
-        services.TryAddSingleton(npgsqlDataSource);
 
         // Fabrique Dapper dédiée aux requêtes SQL bas niveau.
         services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
@@ -110,7 +104,6 @@ public static class InfrastructureConfiguration
                     .AddHttpClientInstrumentation()
                     .AddEntityFrameworkCoreInstrumentation()
                     .AddRedisInstrumentation()
-                    .AddNpgsql()
                     .AddSource(MassTransit.Logging.DiagnosticHeaders.DefaultListenerName);
 
                 tracing.AddOtlpExporter();

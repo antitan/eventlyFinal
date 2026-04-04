@@ -78,6 +78,7 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
     {
         return new
         {
+            RoleId = role.Id,
             RoleName = role.Name,
             PermissionCode = permission.Code
         };

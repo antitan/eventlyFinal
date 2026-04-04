@@ -32,7 +32,7 @@ Assembly[] moduleApplicationAssemblies = [
 
 builder.Services.AddApplication(moduleApplicationAssemblies);
 
-string databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow("Database");
+//string databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow("Database");
 string redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache");
 
 builder.Services.AddInfrastructure(
@@ -42,7 +42,7 @@ builder.Services.AddInfrastructure(
         TicketingModule.ConfigureConsumers,
         AttendanceModule.ConfigureConsumers
     ],
-    databaseConnectionString,
+    //databaseConnectionString,
     redisConnectionString);
 
 Uri keyCloakHealthUrl = builder.Configuration.GetKeyCloakHealthUrl();
