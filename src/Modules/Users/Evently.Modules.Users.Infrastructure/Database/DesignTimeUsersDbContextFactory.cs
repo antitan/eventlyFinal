@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-
 namespace Evently.Modules.Users.Infrastructure.Database;
 
+//1- set as startup project
 
 //dotnet ef migrations add Create_Database --project "C:\proj_cs\eventlyFinal\src\Modules\Users\Evently.Modules.Users.Infrastructure\Evently.Modules.Users.Infrastructure.csproj" --startup-project "C:\proj_cs\eventlyFinal\src\API\Evently.Api\Evently.Api.csproj" --output-dir "Database/Migrations" --context UsersDbContext --verbose
 

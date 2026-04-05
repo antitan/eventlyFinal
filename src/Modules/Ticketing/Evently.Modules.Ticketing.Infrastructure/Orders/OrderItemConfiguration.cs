@@ -9,10 +9,12 @@ internal sealed class OrderItemConfiguration : IEntityTypeConfiguration<OrderIte
 {
     public void Configure(EntityTypeBuilder<OrderItem> builder)
     {
-        builder.HasKey(c => c.Id);
+        builder.HasKey(oi => oi.Id);
 
-        builder.Property(c => c.Id).ValueGeneratedNever();
+        builder.HasOne<Order>().WithMany(o => o.OrderItems).HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne<TicketType>().WithMany().HasForeignKey(oi => oi.TicketTypeId);
+        builder.HasOne<TicketType>().WithMany().HasForeignKey(oi => oi.TicketTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
