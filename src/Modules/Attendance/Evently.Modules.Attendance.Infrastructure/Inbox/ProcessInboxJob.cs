@@ -83,11 +83,11 @@ internal sealed class ProcessInboxJob(
              SELECT
                 id AS {nameof(InboxMessageResponse.Id)},
                 content AS {nameof(InboxMessageResponse.Content)}
-             FROM attendance.inbox_messages
+             FROM attendance.inbox_messages WITH (UPDLOCK, READPAST, ROWLOCK)
              WHERE processed_on_utc IS NULL
              ORDER BY occurred_on_utc
-             LIMIT {inboxOptions.Value.BatchSize}
-             FOR UPDATE
+             OFFSET 0 ROWS
+             FETCH NEXT {inboxOptions.Value.BatchSize} ROWS ONLY
              """;
 
         IEnumerable<InboxMessageResponse> inboxMessages = await connection.QueryAsync<InboxMessageResponse>(

@@ -51,11 +51,11 @@ internal sealed class SearchEventsQueryHandler(IDbConnectionFactory dbConnection
              WHERE
                 status = @Status AND
                 (@CategoryId IS NULL OR category_id = @CategoryId) AND
-                (@StartDate::timestamp IS NULL OR starts_at_utc >= @StartDate::timestamp) AND
-                (@EndDate::timestamp IS NULL OR ends_at_utc >= @EndDate::timestamp)
+                (@StartDate IS NULL OR starts_at_utc >= @StartDate) AND
+                (@EndDate IS NULL OR ends_at_utc >= @EndDate)
              ORDER BY starts_at_utc
-             OFFSET @Skip
-             LIMIT @Take
+             OFFSET @Skip ROWS
+             FETCH NEXT @Take ROWS ONLY
              """;
 
         List<EventResponse> events = (await connection.QueryAsync<EventResponse>(sql, parameters)).AsList();
@@ -72,8 +72,8 @@ internal sealed class SearchEventsQueryHandler(IDbConnectionFactory dbConnection
             WHERE
                status = @Status AND
                (@CategoryId IS NULL OR category_id = @CategoryId) AND
-               (@StartDate::timestamp IS NULL OR starts_at_utc >= @StartDate::timestamp) AND
-               (@EndDate::timestamp IS NULL OR ends_at_utc >= @EndDate::timestamp)
+               (@StartDate IS NULL OR starts_at_utc >= @StartDate) AND
+               (@EndDate IS NULL OR ends_at_utc >= @EndDate)
             """;
 
         int totalCount = await connection.ExecuteScalarAsync<int>(sql, parameters);
