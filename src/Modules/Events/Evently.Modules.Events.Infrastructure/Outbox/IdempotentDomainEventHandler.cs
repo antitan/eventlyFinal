@@ -35,12 +35,12 @@ internal sealed class IdempotentDomainEventHandler<TDomainEvent>(
     {
         const string sql = 
             """
-            SELECT EXISTS(
+            SELECT CASE WHEN EXISTS (
                 SELECT 1
                 FROM events.outbox_message_consumers
                 WHERE outbox_message_id = @OutboxMessageId AND
                       name = @Name
-            )
+            ) THEN CAST(1 AS bit) ELSE CAST(0 AS bit) END
             """;
 
         return await dbConnection.ExecuteScalarAsync<bool>(sql, outboxMessageConsumer);
