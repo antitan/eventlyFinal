@@ -18,9 +18,8 @@ internal sealed class TicketTypeRepository(TicketingDbContext context) : ITicket
             .FromSql(
                 $"""
                 SELECT id, event_id, name, price, currency, quantity, available_quantity
-                FROM ticketing.ticket_types
+                FROM ticketing.ticket_types WITH (UPDLOCK, ROWLOCK, NOWAIT)
                 WHERE id = {id}
-                FOR UPDATE NOWAIT
                 """)
             .SingleOrDefaultAsync(cancellationToken);
     }

@@ -18,13 +18,14 @@ internal sealed class AttendeeCheckedInDomainEventHandler(IDbConnectionFactory d
 
         const string sql =
             """
-            UPDATE attendance.event_statistics es
+            UPDATE es
             SET attendees_checked_in = (
                 SELECT COUNT(*)
                 FROM attendance.tickets t
                 WHERE
                     t.event_id = es.event_id AND
                     t.used_at_utc IS NOT NULL)
+            FROM attendance.event_statistics es
             WHERE es.event_id = @EventId
             """;
 
