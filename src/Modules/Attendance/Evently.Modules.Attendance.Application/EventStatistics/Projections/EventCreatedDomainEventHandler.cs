@@ -53,8 +53,8 @@ internal sealed class EventCreatedDomainEventHandler(IDbConnectionFactory dbConn
                 domainEvent.EndsAtUtc,
                 TicketsSold = 0,
                 AttendeesCheckedIn = 0,
-                DuplicateCheckInTickets = Array.Empty<string>(),
-                InvalidCheckInTickets = Array.Empty<string>()
+                DuplicateCheckInTickets = "[]",
+                InvalidCheckInTickets = "[]"
             });
     }
 }
