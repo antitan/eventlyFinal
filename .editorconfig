@@ -234,6 +234,9 @@ dotnet_diagnostic.CA1002.severity = none
 # CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array
 dotnet_diagnostic.CA1861.severity = none
 
+# CA1873: Evaluation of this argument may be expensive and unnecessary if logging is disabled
+dotnet_diagnostic.CA1873.severity = none
+
 # CA1008: Enums should have zero value
 dotnet_diagnostic.CA1008.severity = none
 
@@ -361,6 +364,9 @@ dotnet_diagnostic.IDE0270.severity = none
 
 # IDE0290: Use primary constructor
 dotnet_diagnostic.IDE0290.severity = none
+
+# IDE0161: Convert to file-scoped namespace
+dotnet_diagnostic.IDE0161.severity = none
 
 # SonarAnalyzer.CSharp rules
 
