@@ -36,12 +36,12 @@ internal sealed class IdempotentIntegrationEventHandler<TIntegrationEvent>(
     {
         const string sql =
             """
-            SELECT EXISTS(
+            SELECT CASE WHEN EXISTS (
                 SELECT 1
                 FROM users.inbox_message_consumers
                 WHERE inbox_message_id = @InboxMessageId AND
                       name = @Name
-            )
+            ) THEN CAST(1 AS bit) ELSE CAST(0 AS bit) END
             """;
 
         return await dbConnection.ExecuteScalarAsync<bool>(sql, inboxMessageConsumer);

@@ -17,11 +17,12 @@ internal sealed class TicketCreatedDomainEventHandler(IDbConnectionFactory dbCon
 
         const string sql =
             """
-            UPDATE attendance.event_statistics es
+            UPDATE es
             SET tickets_sold = (
                 SELECT COUNT(*)
                 FROM attendance.tickets t
                 WHERE t.event_id = es.event_id)
+            FROM attendance.event_statistics es
             WHERE es.event_id = @EventId
             """;
 

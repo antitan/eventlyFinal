@@ -14,6 +14,8 @@ using Evently.Modules.Ticketing.Infrastructure.Orders;
 using Evently.Modules.Ticketing.Infrastructure.Payments;
 using Evently.Modules.Ticketing.Infrastructure.Tickets;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Evently.Modules.Ticketing.Infrastructure.Database;
@@ -60,5 +62,39 @@ public sealed class TicketingDbContext(DbContextOptions<TicketingDbContext> opti
         }
 
         return (await Database.BeginTransactionAsync(cancellationToken)).GetDbTransaction();
+    }
+
+    public override int SaveChanges()
+    {
+        try
+        {
+            return base.SaveChanges();
+        }
+        catch (Exception exception)
+        {
+            this.GetService<ILogger<TicketingDbContext>>().LogError(
+                exception,
+                "{ClassName}:{MethodName} - Erreur EF Core pendant SaveChanges.",
+                nameof(TicketingDbContext),
+                nameof(SaveChanges));
+            throw;
+        }
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            this.GetService<ILogger<TicketingDbContext>>().LogError(
+                exception,
+                "{ClassName}:{MethodName} - Erreur EF Core pendant SaveChangesAsync.",
+                nameof(TicketingDbContext),
+                nameof(SaveChangesAsync));
+            throw;
+        }
     }
 }

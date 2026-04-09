@@ -8,6 +8,8 @@ using Evently.Modules.Attendance.Infrastructure.Attendees;
 using Evently.Modules.Attendance.Infrastructure.Events;
 using Evently.Modules.Attendance.Infrastructure.Tickets;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Evently.Modules.Attendance.Infrastructure.Database;
 
@@ -34,5 +36,39 @@ public sealed class AttendanceDbContext(DbContextOptions<AttendanceDbContext> op
         modelBuilder.ApplyConfiguration(new EventConfiguration());
         modelBuilder.ApplyConfiguration(new TicketConfiguration());
         modelBuilder.ApplyConfiguration(new EventStatisticsConfiguration());
+    }
+
+    public override int SaveChanges()
+    {
+        try
+        {
+            return base.SaveChanges();
+        }
+        catch (Exception exception)
+        {
+            this.GetService<ILogger<AttendanceDbContext>>().LogError(
+                exception,
+                "{ClassName}:{MethodName} - Erreur EF Core pendant SaveChanges.",
+                nameof(AttendanceDbContext),
+                nameof(SaveChanges));
+            throw;
+        }
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            this.GetService<ILogger<AttendanceDbContext>>().LogError(
+                exception,
+                "{ClassName}:{MethodName} - Erreur EF Core pendant SaveChangesAsync.",
+                nameof(AttendanceDbContext),
+                nameof(SaveChangesAsync));
+            throw;
+        }
     }
 }

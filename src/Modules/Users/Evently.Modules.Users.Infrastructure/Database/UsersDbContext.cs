@@ -4,6 +4,8 @@ using Evently.Modules.Users.Application.Abstractions.Data;
 using Evently.Modules.Users.Domain.Users;
 using Evently.Modules.Users.Infrastructure.Users;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Evently.Modules.Users.Infrastructure.Database;
 
@@ -25,5 +27,39 @@ public sealed class UsersDbContext(DbContextOptions<UsersDbContext> options) : D
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
         modelBuilder.ApplyConfiguration(new PermissionConfiguration());
+    }
+
+    public override int SaveChanges()
+    {
+        try
+        {
+            return base.SaveChanges();
+        }
+        catch (Exception exception)
+        {
+            this.GetService<ILogger<UsersDbContext>>().LogError(
+                exception,
+                "{ClassName}:{MethodName} - Erreur EF Core pendant SaveChanges.",
+                nameof(UsersDbContext),
+                nameof(SaveChanges));
+            throw;
+        }
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            this.GetService<ILogger<UsersDbContext>>().LogError(
+                exception,
+                "{ClassName}:{MethodName} - Erreur EF Core pendant SaveChangesAsync.",
+                nameof(UsersDbContext),
+                nameof(SaveChangesAsync));
+            throw;
+        }
     }
 }

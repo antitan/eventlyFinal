@@ -17,9 +17,15 @@ internal sealed class InvalidCheckInAttemptedDomainEventHandler(IDbConnectionFac
 
         const string sql =
             """
-            UPDATE attendance.event_statistics es
-            SET invalid_check_in_tickets = array_append(invalid_check_in_tickets, @TicketCode)
-            WHERE es.event_id = @EventId
+            UPDATE attendance.event_statistics
+            SET invalid_check_in_tickets = JSON_MODIFY(
+                CASE
+                    WHEN ISJSON(invalid_check_in_tickets) = 1 THEN invalid_check_in_tickets
+                    ELSE '[]'
+                END,
+                'append $',
+                @TicketCode)
+            WHERE event_id = @EventId
             """;
 
         await connection.ExecuteAsync(sql, domainEvent);

@@ -18,9 +18,15 @@ internal sealed class DuplicateCheckInAttemptedDomainEventHandler(IDbConnectionF
 
         const string sql =
             """
-            UPDATE attendance.event_statistics es
-            SET duplicate_check_in_tickets = array_append(duplicate_check_in_tickets, @TicketCode)
-            WHERE es.event_id = @EventId
+            UPDATE attendance.event_statistics
+            SET duplicate_check_in_tickets = JSON_MODIFY(
+                CASE
+                    WHEN ISJSON(duplicate_check_in_tickets) = 1 THEN duplicate_check_in_tickets
+                    ELSE '[]'
+                END,
+                'append $',
+                @TicketCode)
+            WHERE event_id = @EventId
             """;
 
         await connection.ExecuteAsync(sql, domainEvent);

@@ -7,6 +7,8 @@ using Evently.Modules.Events.Domain.TicketTypes;
 using Evently.Modules.Events.Infrastructure.Events;
 using Evently.Modules.Events.Infrastructure.TicketTypes;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Evently.Modules.Events.Infrastructure.Database;
 
@@ -29,5 +31,39 @@ public sealed class EventsDbContext(DbContextOptions<EventsDbContext> options) :
         modelBuilder.ApplyConfiguration(new InboxMessageConsumerConfiguration());
         modelBuilder.ApplyConfiguration(new EventConfiguration());
         modelBuilder.ApplyConfiguration(new TicketTypeConfiguration());
+    }
+
+    public override int SaveChanges()
+    {
+        try
+        {
+            return base.SaveChanges();
+        }
+        catch (Exception exception)
+        {
+            this.GetService<ILogger<EventsDbContext>>().LogError(
+                exception,
+                "{ClassName}:{MethodName} - Erreur EF Core pendant SaveChanges.",
+                nameof(EventsDbContext),
+                nameof(SaveChanges));
+            throw;
+        }
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            this.GetService<ILogger<EventsDbContext>>().LogError(
+                exception,
+                "{ClassName}:{MethodName} - Erreur EF Core pendant SaveChangesAsync.",
+                nameof(EventsDbContext),
+                nameof(SaveChangesAsync));
+            throw;
+        }
     }
 }
