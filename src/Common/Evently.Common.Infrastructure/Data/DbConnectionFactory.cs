@@ -2,7 +2,7 @@
 using Evently.Common.Application.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging; 
 
 namespace Evently.Common.Infrastructure.Data;
 
@@ -26,7 +26,7 @@ internal sealed class DbConnectionFactory(
                 "{ClassName}:{MethodName} - Erreur lors de l'ouverture de la connexion SQL Server.",
                 nameof(DbConnectionFactory),
                 nameof(OpenConnectionAsync));
-            throw;
+            throw ;
         }
     }
 }

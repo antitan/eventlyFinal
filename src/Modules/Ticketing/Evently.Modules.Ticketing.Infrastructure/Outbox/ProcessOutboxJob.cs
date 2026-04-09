@@ -85,8 +85,8 @@ internal sealed class ProcessOutboxJob(
                 id AS {nameof(OutboxMessageResponse.Id)},
                 content AS {nameof(OutboxMessageResponse.Content)}
              FROM ticketing.outbox_messages WITH (UPDLOCK, READPAST, ROWLOCK)
-             WHERE processed_on_utc IS NULL
-             ORDER BY occurred_on_utc
+             WHERE ProcessedOnUtc IS NULL
+             ORDER BY OccurredOnUtc
              OFFSET 0 ROWS
              FETCH NEXT {outboxOptions.Value.BatchSize} ROWS ONLY
              """;
@@ -107,7 +107,7 @@ internal sealed class ProcessOutboxJob(
         const string sql =
             """
             UPDATE ticketing.outbox_messages
-            SET processed_on_utc = @ProcessedOnUtc,
+            SET ProcessedOnUtc = @ProcessedOnUtc,
                 error = @Error
             WHERE id = @Id
             """;

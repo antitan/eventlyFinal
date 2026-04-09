@@ -402,3 +402,6 @@ dotnet_diagnostic.S4136.severity = none
 
 # S6605: Collection-specific "Exists" method should be used instead of the "Any" extension
 dotnet_diagnostic.S6605.severity = none
+
+# S2139: Either log this exception and handle it, or rethrow it with some contextual information.
+dotnet_diagnostic.S2139.severity = none

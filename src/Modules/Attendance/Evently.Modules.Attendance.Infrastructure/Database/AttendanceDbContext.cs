@@ -10,6 +10,7 @@ using Evently.Modules.Attendance.Infrastructure.Tickets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Evently.Modules.Attendance.Infrastructure.Database;
 

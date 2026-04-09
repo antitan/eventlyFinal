@@ -84,8 +84,8 @@ internal sealed class ProcessInboxJob(
                 id AS {nameof(InboxMessageResponse.Id)},
                 content AS {nameof(InboxMessageResponse.Content)}
              FROM attendance.inbox_messages WITH (UPDLOCK, READPAST, ROWLOCK)
-             WHERE processed_on_utc IS NULL
-             ORDER BY occurred_on_utc
+             WHERE ProcessedOnUtc IS NULL
+             ORDER BY OccurredOnUtc
              OFFSET 0 ROWS
              FETCH NEXT {inboxOptions.Value.BatchSize} ROWS ONLY
              """;
@@ -106,7 +106,7 @@ internal sealed class ProcessInboxJob(
         const string sql =
             """
             UPDATE attendance.inbox_messages
-            SET processed_on_utc = @ProcessedOnUtc,
+            SET ProcessedOnUtc = @ProcessedOnUtc,
                 error = @Error
             WHERE id = @Id
             """;
