@@ -4,26 +4,23 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.Keycloak;
-using Testcontainers.PostgreSql;
+using Testcontainers.MsSql;
 using Testcontainers.Redis;
 
 namespace Evently.Modules.Users.IntegrationTests.Abstractions;
 
 public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:latest")
-        .WithDatabase("evently")
-        .WithUsername("postgres")
-        .WithPassword("postgres")
+
+    private readonly MsSqlContainer _dbContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
+    .WithPassword("Your_strong_password123")
+    .Build();
+
+    private readonly RedisContainer _redisContainer = new RedisBuilder("redis:latest")
         .Build();
 
-    private readonly RedisContainer _redisContainer = new RedisBuilder()
-        .WithImage("redis:latest")
-        .Build();
-
-    private readonly KeycloakContainer _keycloakContainer = new KeycloakBuilder()
-        .WithImage("quay.io/keycloak/keycloak:latest")
+    private readonly KeycloakContainer _keycloakContainer = new KeycloakBuilder("quay.io/keycloak/keycloak:latest")
+         .WithImage("quay.io/keycloak/keycloak:latest")
         .WithResourceMapping(
             new FileInfo("evently-realm-export.json"),
             new FileInfo("/opt/keycloak/data/import/realm.json"))

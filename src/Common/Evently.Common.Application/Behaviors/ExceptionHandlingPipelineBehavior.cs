@@ -20,7 +20,7 @@ internal sealed class ExceptionHandlingPipelineBehavior<TRequest, TResponse>(
         try
         {
             // Délègue l'exécution au handler suivant de la pipeline.
-            return await next();
+            return await next(cancellationToken);
         }
         catch (Exception exception)
         {

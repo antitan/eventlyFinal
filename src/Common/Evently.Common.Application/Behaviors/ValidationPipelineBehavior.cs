@@ -26,7 +26,7 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
         if (validationFailures.Length == 0)
         {
             // Pas d'erreur : on continue la pipeline normalement.
-            return await next();
+            return await next(cancellationToken);
         }
 
         // Si le handler retourne Result<T>, on fabrique dynamiquement

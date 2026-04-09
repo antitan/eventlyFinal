@@ -4,4 +4,8 @@
     <ProjectReference Include="..\..\..\Common\Evently.Common.Application\Evently.Common.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.24.0.89429" />
+  </ItemGroup>
+
 </Project>

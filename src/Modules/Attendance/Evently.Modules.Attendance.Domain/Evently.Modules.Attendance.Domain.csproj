@@ -8,5 +8,9 @@
     <InternalsVisibleTo Include="Evently.Modules.Attendance.UnitTests" />
     <InternalsVisibleTo Include="Evently.UnitTests" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.24.0.89429" />
+  </ItemGroup>
   
 </Project>

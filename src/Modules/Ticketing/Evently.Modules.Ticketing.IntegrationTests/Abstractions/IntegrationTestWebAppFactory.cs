@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Testcontainers.PostgreSql;
+using Testcontainers.MsSql;
 using Testcontainers.Redis;
 
 namespace Evently.Modules.Ticketing.IntegrationTests.Abstractions;
 
 public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:latest")
-        .WithDatabase("evently")
-        .WithUsername("postgres")
-        .WithPassword("postgres")
-        .Build();
 
-    private readonly RedisContainer _redisContainer = new RedisBuilder()
-        .WithImage("redis:latest")
+    private readonly MsSqlContainer _dbContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
+    .WithPassword("Your_strong_password123")
+    .Build();
+
+    private readonly RedisContainer _redisContainer = new RedisBuilder("redis:latest")
         .Build();
+     
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
